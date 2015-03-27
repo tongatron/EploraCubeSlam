@@ -1,25 +1,5 @@
 /*
-Esplora for CubeSlam
-
-game: https://www.cubeslam.com
-
-
-CubeSlam (https://www.cubeslam.com) game controller sketch for Arduino Esplora.
-
-Play Google CubeSlam (https://www.cubeslam.com) with an Esplora board.
-The games runs on browser (preferably Chrome) and uses
-left and right arrow on the keyboard to move the bar.
-Press SWITCH 3 to switch between three playing modes:                     
-
-mode 0:   JOYSTICK
-
-mode 1:   BUTTONS
-          uses the SWITCH 2 (left arrow) and the SWITCH 4 (right arrow)
-
-mode 2:   ACCELEROMETER
-          move the board on X Axes to move the bar
-                                        
-to press space, press: SWITCH 1 + SWITCH 4
+https://github.com/tongatron/EploraCubeSlam/
 
 Created on 27 Mar 2015
 by Giovanni Bindi - giovanni.bindi@gmail.com
@@ -39,7 +19,6 @@ int joystickXValue = 0;
 int accelXValue = 0;
 
 void setup() {
-  pinMode(11, OUTPUT);
   Keyboard.begin();
   EsploraTFT.begin();
   EsploraTFT.stroke(255, 255, 255);
@@ -49,7 +28,6 @@ void setup() {
   EsploraTFT.text("play mode:", 10, 50);
   EsploraTFT.text("JOYSTICK", 10, 70);
 }
-
 
 void loop() {
 
@@ -72,34 +50,27 @@ void loop() {
       if ((!Esplora.readButton(SWITCH_1)) && (!Esplora.readButton(SWITCH_4)))  pressSpace();
       if (!Esplora.readButton(SWITCH_2)) Left_Arrow(delayButtons);
       if (!Esplora.readButton(SWITCH_4)) Right_Arrow(delayButtons);
-
       break;
 
     case 2:
-
       if (mode != prevMode) {
         EsploraTFT.background(0, 0, 255);
         EsploraTFT.text("CUBE SLAM", 10, 10);
         EsploraTFT.text("play mode:", 10, 50);
         EsploraTFT.text("ACCELEROMET.", 10, 70);
         prevMode = mode;
-      }
-      
-      Esplora.writeRGB(50, 50, 50); // xxxxxxxxxxxxxxxxx
-      
-      if ((!Esplora.readButton(SWITCH_1)) && (!Esplora.readButton(SWITCH_4)))  pressSpace();
-      
+      }      
+      Esplora.writeRGB(50, 50, 50); // strange behavior of the board, red won't work but other colors does   
+      if ((!Esplora.readButton(SWITCH_1)) && (!Esplora.readButton(SWITCH_4))) pressSpace();
       accelXValue = Esplora.readAccelerometer(X_AXIS);
       if (accelXValue > 20) {
         delayAccelerometer = map (accelXValue, 0, 200, 150, 10);
         Left_Arrow(delayAccelerometer);
       }
-
       if (accelXValue < -20) {
         delayAccelerometer = map (accelXValue, 0, -200, 150, 10);
         Right_Arrow(delayAccelerometer);
       }
-
       break;
 
     default:
@@ -139,10 +110,8 @@ void Left_Arrow (int delayX) {
   Keyboard.press(0xD8);
   Esplora.writeRGB(0, 0, 0);
   Esplora.tone(1000, 10);
-  if (mode != 2) digitalWrite(11, HIGH);
   delay(delayX);
   Esplora.noTone();
-  if (mode != 2) digitalWrite(11, LOW);
   Keyboard.releaseAll();
 }
 
@@ -150,9 +119,7 @@ void Right_Arrow (int delayX) {
   Keyboard.press(0xD7);
   Esplora.writeRGB(0, 0, 0);
   Esplora.tone(1000, 10);
-  if (mode != 2) digitalWrite(11, HIGH);
   delay(delayX);
   Esplora.noTone();
-  if (mode != 2) digitalWrite(11, LOW);
   Keyboard.releaseAll();
 }
