@@ -48,7 +48,6 @@ void setup() {
   EsploraTFT.text("CUBE SLAM", 10, 10);
   EsploraTFT.text("play mode:", 10, 50);
   EsploraTFT.text("JOYSTICK", 10, 70);
-  Esplora.writeRGB(0, 0, 0);
 }
 
 
@@ -62,14 +61,14 @@ void loop() {
   switch (mode) {
 
     case 1:
-      //Esplora.writeRGB(0, 0, 255);
       if (mode != prevMode) {
-        EsploraTFT.background(0, 0, 0);
+        EsploraTFT.background(0, 150, 0);
         EsploraTFT.text("CUBE SLAM", 10, 10);
         EsploraTFT.text("play mode:", 10, 50);
         EsploraTFT.text("BUTTONS", 10, 70);
         prevMode = mode;
       }
+      Esplora.writeRGB(0, 50, 0);
       if ((!Esplora.readButton(SWITCH_1)) && (!Esplora.readButton(SWITCH_4)))  pressSpace();
       if (!Esplora.readButton(SWITCH_2)) Left_Arrow(delayButtons);
       if (!Esplora.readButton(SWITCH_4)) Right_Arrow(delayButtons);
@@ -77,7 +76,7 @@ void loop() {
       break;
 
     case 2:
-      //Esplora.writeRGB(255, 255, 255);
+
       if (mode != prevMode) {
         EsploraTFT.background(0, 0, 255);
         EsploraTFT.text("CUBE SLAM", 10, 10);
@@ -85,11 +84,12 @@ void loop() {
         EsploraTFT.text("ACCELEROMET.", 10, 70);
         prevMode = mode;
       }
+      
+      Esplora.writeRGB(50, 50, 50); // xxxxxxxxxxxxxxxxx
+      
       if ((!Esplora.readButton(SWITCH_1)) && (!Esplora.readButton(SWITCH_4)))  pressSpace();
+      
       accelXValue = Esplora.readAccelerometer(X_AXIS);
-
-      Serial.println(accelXValue);
-
       if (accelXValue > 20) {
         delayAccelerometer = map (accelXValue, 0, 200, 150, 10);
         Left_Arrow(delayAccelerometer);
@@ -111,9 +111,8 @@ void loop() {
         EsploraTFT.text("JOYSTICK", 10, 70);
         prevMode = mode;
       }
-
+      Esplora.writeRGB(0, 0, 50);
       if ((!Esplora.readButton(SWITCH_1)) && (!Esplora.readButton(SWITCH_4)))  pressSpace();
-
       joystickXValue = Esplora.readJoystickX();
       if (joystickXValue > 500) {
         Left_Arrow(delayJoystick);
@@ -134,28 +133,26 @@ void pressSpace () {
   delay(100);
   Keyboard.releaseAll();
   Esplora.writeRGB(0, 0, 0);
-}
+}    
 
 void Left_Arrow (int delayX) {
   Keyboard.press(0xD8);
+  Esplora.writeRGB(0, 0, 0);
   Esplora.tone(1000, 10);
-  Esplora.writeRGB(0, 150, 0);
   if (mode != 2) digitalWrite(11, HIGH);
   delay(delayX);
-  Esplora.writeRGB(0, 0, 0);
   Esplora.noTone();
-  digitalWrite(11, LOW);
+  if (mode != 2) digitalWrite(11, LOW);
   Keyboard.releaseAll();
 }
 
 void Right_Arrow (int delayX) {
   Keyboard.press(0xD7);
+  Esplora.writeRGB(0, 0, 0);
   Esplora.tone(1000, 10);
-  Esplora.writeRGB(0, 150, 0);
   if (mode != 2) digitalWrite(11, HIGH);
   delay(delayX);
-  Esplora.writeRGB(0, 0, 0);
   Esplora.noTone();
-  digitalWrite(11, LOW);
+  if (mode != 2) digitalWrite(11, LOW);
   Keyboard.releaseAll();
 }
