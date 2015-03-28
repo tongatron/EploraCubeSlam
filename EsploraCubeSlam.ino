@@ -2,7 +2,7 @@
 https://github.com/tongatron/EploraCubeSlam/
 
 Created on 27 Mar 2015
-by Giovanni Bindi - giovanni.bindi@gmail.com
+by Giovanni Bindi
 This example code is in the public domain.
 */
 
@@ -12,9 +12,11 @@ This example code is in the public domain.
 
 unsigned char prevMode = 0;
 unsigned char mode = 0;
+
 const int delayJoystick = 50;
 const int delayButtons = 50;
 int delayAccelerometer = 0;
+
 int joystickXValue = 0;
 int accelXValue = 0;
 
@@ -24,14 +26,16 @@ void setup() {
   EsploraTFT.stroke(255, 255, 255);
   EsploraTFT.setTextSize(2);
   EsploraTFT.background(255, 0, 0);
-  EsploraTFT.text("CUBE SLAM", 10, 10);
-  EsploraTFT.text("play mode:", 10, 50);
-  EsploraTFT.text("JOYSTICK", 10, 70);
+  EsploraTFT.text(" CUBE SLAM", 10, 20);
+  EsploraTFT.text(" _________", 10, 35);
+  EsploraTFT.text("play mode:", 10, 80);
+  EsploraTFT.text("JOYSTICK", 10, 100);
 }
+
 
 void loop() {
 
-  if (!Esplora.readButton(SWITCH_3)) {
+  if (!Esplora.readJoystickButton()) {
     mode++;
     delay(100);
   }
@@ -41,9 +45,10 @@ void loop() {
     case 1:
       if (mode != prevMode) {
         EsploraTFT.background(0, 150, 0);
-        EsploraTFT.text("CUBE SLAM", 10, 10);
-        EsploraTFT.text("play mode:", 10, 50);
-        EsploraTFT.text("BUTTONS", 10, 70);
+        EsploraTFT.text(" CUBE SLAM", 10, 20);
+        EsploraTFT.text(" _________", 10, 35);
+        EsploraTFT.text("play mode:", 10, 80);
+        EsploraTFT.text("BUTTONS", 10, 100);
         prevMode = mode;
       }
       Esplora.writeRGB(0, 50, 0);
@@ -55,19 +60,20 @@ void loop() {
     case 2:
       if (mode != prevMode) {
         EsploraTFT.background(0, 0, 255);
-        EsploraTFT.text("CUBE SLAM", 10, 10);
-        EsploraTFT.text("play mode:", 10, 50);
-        EsploraTFT.text("ACCELEROMET.", 10, 70);
+        EsploraTFT.text(" CUBE SLAM", 10, 20);
+        EsploraTFT.text(" _________", 10, 35);
+        EsploraTFT.text("play mode:", 10, 80);
+        EsploraTFT.text("ACCELEROMET.", 10, 100);
         prevMode = mode;
-      }      
-      Esplora.writeRGB(50, 50, 50); // strange behavior of the board, red won't work but other colors does   
-      if ((!Esplora.readButton(SWITCH_1)) && (!Esplora.readButton(SWITCH_4))) pressSpace();
+      }
+      Esplora.writeRGB(50, 50, 50);
       accelXValue = Esplora.readAccelerometer(X_AXIS);
-      if (accelXValue > 20) {
+      if ((!Esplora.readButton(SWITCH_1)) && (!Esplora.readButton(SWITCH_4)))  pressSpace();
+      if (accelXValue > 30) {
         delayAccelerometer = map (accelXValue, 0, 200, 150, 10);
         Left_Arrow(delayAccelerometer);
       }
-      if (accelXValue < -20) {
+      if (accelXValue < -30) {
         delayAccelerometer = map (accelXValue, 0, -200, 150, 10);
         Right_Arrow(delayAccelerometer);
       }
@@ -77,9 +83,10 @@ void loop() {
       mode = 0;
       if (mode != prevMode) {
         EsploraTFT.background(255, 0, 0);
-        EsploraTFT.text("CUBE SLAM", 10, 10);
-        EsploraTFT.text("play mode:", 10, 50);
-        EsploraTFT.text("JOYSTICK", 10, 70);
+        EsploraTFT.text(" CUBE SLAM", 10, 20);
+        EsploraTFT.text(" _________", 10, 35);
+        EsploraTFT.text("play mode:", 10, 80);
+        EsploraTFT.text("JOYSTICK", 10, 100);
         prevMode = mode;
       }
       Esplora.writeRGB(0, 0, 50);
@@ -101,16 +108,17 @@ void loop() {
 void pressSpace () {
   Keyboard.press(0x20);
   Esplora.writeRGB(0, 255, 0);
-  delay(100);
+  delay(500);
   Keyboard.releaseAll();
   Esplora.writeRGB(0, 0, 0);
-}    
+}
 
 void Left_Arrow (int delayX) {
   Keyboard.press(0xD8);
   Esplora.writeRGB(0, 0, 0);
   Esplora.tone(1000, 10);
   delay(delayX);
+  digitalWrite(11, LOW);
   Esplora.noTone();
   Keyboard.releaseAll();
 }
@@ -120,6 +128,7 @@ void Right_Arrow (int delayX) {
   Esplora.writeRGB(0, 0, 0);
   Esplora.tone(1000, 10);
   delay(delayX);
+  digitalWrite(11, LOW);
   Esplora.noTone();
   Keyboard.releaseAll();
 }
